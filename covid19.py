@@ -15,15 +15,6 @@ data1 = pd.read_csv("data/day_wise.csv")
 arima_model_fit = joblib.load("models/arima_model.pkl")
 # Load LSTM model
 lstm_model = load_model("models/lstm_model.h5")
-from dash import Dash, dcc, html, Input, Output, State
-import pandas as pd
-import plotly.express as px
-import plotly.graph_objects as go
-from statsmodels.tsa.arima.model import ARIMA
-import numpy as np
-from sklearn.preprocessing import MinMaxScaler
-from tensorflow.keras.models import Sequential, load_model
-import joblib
 
 # Initialize the app
 app = Dash(__name__)
