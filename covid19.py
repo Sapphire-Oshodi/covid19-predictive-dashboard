@@ -17,6 +17,7 @@ import joblib
 
 # Initialize the app
 app = Dash(__name__)
+server = app.server
 
 # Load data
 data = pd.read_csv("data/country_wise_latest.csv")  # Update with relative path if needed
