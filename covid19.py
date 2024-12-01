@@ -8,6 +8,7 @@ from sklearn.preprocessing import MinMaxScaler
 from tensorflow.keras.models import Sequential, load_model
 import joblib
 
+# Load data only once
 data = pd.read_csv("data/country_wise_latest.csv")
 data1 = pd.read_csv("data/day_wise.csv")
 
@@ -18,31 +19,22 @@ lstm_model = load_model("models/lstm_model.h5")
 
 # Initialize the app
 app = Dash(__name__)
-server = app.server
+server = app.server  # For deployment with gunicorn
 
-# Load data
-data = pd.read_csv("data/country_wise_latest.csv")  # Update with relative path if needed
+# Data preparation
 data['Country/Region'] = data['Country/Region'].astype(str)
-
-# Load day-wise data
-data1 = pd.read_csv("data/day_wise.csv")  # Update with relative path if needed
 data1['Date'] = pd.to_datetime(data1['Date'], format='%Y-%m-%d')
 data1.set_index('Date', inplace=True)
 
-# Prepare ARIMA model
+# ARIMA model setup
 confirmed_cases = data1['Confirmed']
 train_size = int(len(confirmed_cases) * 0.8)
 train, test = confirmed_cases[:train_size], confirmed_cases[train_size:]
 
-# Load ARIMA model (replace with pre-trained model)
-arima_model_fit = joblib.load("models/arima_model.pkl")
 arima_forecast = arima_model_fit.forecast(steps=len(test))
 future_forecast_arima = arima_model_fit.forecast(steps=30)
 
-# Prepare LSTM model
-lstm_model = load_model("models/lstm_model.h5")  # Load pre-trained LSTM model
-
-# Scaling and reshaping for LSTM predictions
+# LSTM model setup
 scaler = MinMaxScaler()
 scaled_cases = scaler.fit_transform(confirmed_cases.values.reshape(-1, 1))
 
@@ -64,9 +56,9 @@ lstm_predictions_rescaled = scaler.inverse_transform(lstm_predictions)
 app.layout = html.Div([
     html.H1("COVID-19 Dashboard", style={'textAlign': 'center', 'color': '#004d99'}),
     html.H3("Analysis by Sapphire Oshodi (DataChicGirl)", style={
-        'textAlign': 'center', 
-        'color': '#666', 
-        'fontFamily': 'Arial, sans-serif', 
+        'textAlign': 'center',
+        'color': '#666',
+        'fontFamily': 'Arial, sans-serif',
         'fontStyle': 'italic',
         'marginTop': '10px'
     }),
@@ -107,8 +99,8 @@ app.layout = html.Div([
     ]),
     html.Div([
         html.P("Crafted with passion and precision by DataChicGirl.", style={
-            'textAlign': 'center', 
-            'color': '#333', 
+            'textAlign': 'center',
+            'color': '#333',
             'fontFamily': 'Arial, sans-serif',
             'marginTop': '20px'
         })
@@ -125,7 +117,6 @@ app.layout = html.Div([
 )
 def update_graphs(n_clicks, selected_country):
     if selected_country:
-        # Filter data for the selected country
         filtered_data = data[data['Country/Region'] == selected_country]
         country_stats = filtered_data[['Confirmed', 'Deaths', 'Recovered']].sum().reset_index()
         country_stats.columns = ['Category', 'Value']
@@ -134,7 +125,6 @@ def update_graphs(n_clicks, selected_country):
         country_stats = data[['Confirmed', 'Deaths', 'Recovered']].sum().reset_index()
         country_stats.columns = ['Category', 'Value']
 
-    # Create bar chart
     bar_chart = px.bar(
         country_stats,
         x='Category',
@@ -145,13 +135,11 @@ def update_graphs(n_clicks, selected_country):
         color_discrete_map={'Confirmed': 'blue', 'Deaths': 'red', 'Recovered': 'green'}
     )
 
-    # Update ARIMA plot
     arima_fig = go.Figure([
         go.Scatter(x=test.index, y=test, mode='lines', name='Actual'),
         go.Scatter(x=test.index, y=arima_forecast, mode='lines', name='ARIMA Forecast', line=dict(color='red'))
     ])
-    
-    # Update LSTM plot
+
     lstm_fig = go.Figure([
         go.Scatter(x=test.index, y=test.values, mode='lines', name='Actual'),
         go.Scatter(x=test.index, y=lstm_predictions_rescaled.flatten(), mode='lines', name='LSTM Predictions', line=dict(color='blue'))
@@ -162,5 +150,3 @@ def update_graphs(n_clicks, selected_country):
 # Run the app
 if __name__ == '__main__':
     app.run_server(debug=True)
-
-
