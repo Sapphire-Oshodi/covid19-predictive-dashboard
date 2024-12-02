@@ -14,13 +14,6 @@ Access the live dashboard here: [https://covid19-predictive-dashboard-app.onrend
 - Country-specific data visualization.  
 
 
-## Preview  
-![Dashboard Screenshot 1](Screenshot 2024-12-02 at 23.42.43.png)  
-![Dashboard Screenshot 2](Screenshot 2024-12-02 at 23.43.08.png)  
-
-*Example of the interactive COVID-19 dashboard.*
-
-
 ## Installation  
 To run this project locally:  
 
