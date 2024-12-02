@@ -1,8 +1,9 @@
-![Header Image](pngwing.com (23).png)
+![Header Image](https://user-images.githubusercontent.com/123456789/pngwing-image-url.png)
 
 ## Preview
-![Dashboard Screenshot 1](Screenshot 2024-12-02 at 23.42.43.png)
-![Dashboard Screenshot 2](Screenshot 2024-12-02 at 23.43.08.png)
+![Dashboard Screenshot 1](https://user-images.githubusercontent.com/123456789/screenshot1.png)
+![Dashboard Screenshot 2](https://user-images.githubusercontent.com/123456789/screenshot2.png)
+
 
 
 # Covid19-Predictive-Dashboard
