@@ -5,15 +5,13 @@ import plotly.graph_objects as go
 from statsmodels.tsa.arima.model import ARIMA
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
-from tensorflow.keras.models import Sequential, load_model
+from tensorflow.keras.models import load_model
 import joblib
 
 # Load data only once
 data = pd.read_csv("data/country_wise_latest.csv")
 data1 = pd.read_csv("data/day_wise.csv")
 
-# Load ARIMA model
-arima_model_fit = joblib.load("models/arima_model.pkl")
 # Load LSTM model
 lstm_model = load_model("models/lstm_model.h5")
 
@@ -31,7 +29,12 @@ confirmed_cases = data1['Confirmed']
 train_size = int(len(confirmed_cases) * 0.8)
 train, test = confirmed_cases[:train_size], confirmed_cases[train_size:]
 
-arima_forecast = arima_model_fit.forecast(steps=len(test))
+# Refitting ARIMA model on the training data
+arima_model_fit = ARIMA(train, order=(5,1,0))  # You can adjust (5,1,0) to your preferred ARIMA parameters
+arima_model_fit = arima_model_fit.fit()
+
+# Forecast using ARIMA model
+arima_forecast = arima_model_fit.predict(start=len(train), end=len(train) + len(test) - 1, dynamic=False)
 future_forecast_arima = arima_model_fit.forecast(steps=30)
 
 # LSTM model setup
@@ -125,6 +128,7 @@ def update_graphs(n_clicks, selected_country):
         country_stats = data[['Confirmed', 'Deaths', 'Recovered']].sum().reset_index()
         country_stats.columns = ['Category', 'Value']
 
+    # Update bar chart
     bar_chart = px.bar(
         country_stats,
         x='Category',
@@ -135,11 +139,13 @@ def update_graphs(n_clicks, selected_country):
         color_discrete_map={'Confirmed': 'blue', 'Deaths': 'red', 'Recovered': 'green'}
     )
 
+    # ARIMA forecast plot
     arima_fig = go.Figure([
         go.Scatter(x=test.index, y=test, mode='lines', name='Actual'),
         go.Scatter(x=test.index, y=arima_forecast, mode='lines', name='ARIMA Forecast', line=dict(color='red'))
     ])
 
+    # LSTM forecast plot
     lstm_fig = go.Figure([
         go.Scatter(x=test.index, y=test.values, mode='lines', name='Actual'),
         go.Scatter(x=test.index, y=lstm_predictions_rescaled.flatten(), mode='lines', name='LSTM Predictions', line=dict(color='blue'))
