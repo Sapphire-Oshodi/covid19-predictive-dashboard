@@ -1,3 +1,10 @@
+![Header Image](pngwing.com (23).png)
+
+## Preview
+![Dashboard Screenshot 1](Screenshot 2024-12-02 at 23.42.43.png)
+![Dashboard Screenshot 2](Screenshot 2024-12-02 at 23.43.08.png)
+
+
 # Covid19-Predictive-Dashboard
 COVID-19 Forecasting and Analysis Dashboard: This project features a web dashboard for visualizing and predicting COVID-19 trends using ARIMA and LSTM models. It includes interactive graphs and statistics for global and country-level cases, deaths, and recoveries.
 
