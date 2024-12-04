@@ -60,5 +60,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 [![GitHub license](https://img.shields.io/github/license/your-username/Covid19-Predictive-Dashboard)](LICENSE)  
 
 
-
-Let me know if you need further assistance with this setup!
